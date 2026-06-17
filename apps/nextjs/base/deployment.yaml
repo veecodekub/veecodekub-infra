@@ -20,6 +20,3 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextjs-config
-            - secretRef:
-                name: nextjs-secret
-          
