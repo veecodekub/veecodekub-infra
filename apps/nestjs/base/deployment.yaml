@@ -20,3 +20,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: nestjs-config
+            - secretRef:
+                name: nestjs-secret
+          
