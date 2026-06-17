@@ -1,5 +1,6 @@
 resources:
   - ../../base
+  - namespace.yaml
 
 namespace: nestjs-test
 
@@ -15,3 +16,13 @@ patches:
       - op: replace
         path: /spec/rules/0/host
         value: nestjs-test.veecodekub.dev
+      - op: add
+        path: /metadata/annotations
+        value:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+      - op: add
+        path: /spec/tls
+        value:
+          - hosts:
+              - nestjs-test.veecodekub.dev
+            secretName: nestjs-test-tls

@@ -1,11 +1,12 @@
 resources:
   - ../../base
+  - namespace.yaml
 
 namespace: nestjs-prod
 
 images:
   - name: ghcr.io/veecodekub/nestjs-cicd
-    newTag: latest
+    newTag: 0.0.1
 
 patches:
   - target:
@@ -15,3 +16,13 @@ patches:
       - op: replace
         path: /spec/rules/0/host
         value: nestjs-prod.veecodekub.dev
+      - op: add
+        path: /metadata/annotations
+        value:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+      - op: add
+        path: /spec/tls
+        value:
+          - hosts:
+              - nestjs-prod.veecodekub.dev
+            secretName: nestjs-prod-tls

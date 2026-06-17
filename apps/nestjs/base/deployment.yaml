@@ -19,15 +19,15 @@ spec:
             - containerPort: 3000
           livenessProbe:
             httpGet:
-              path: /api/v1/health
+              path: /api/v1/health/live
               port: 3000
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /api/v1/health
+              path: /api/v1/health/ready
               port: 3000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
           resources:
@@ -42,4 +42,3 @@ spec:
                 name: nestjs-config
             - secretRef:
                 name: nestjs-secret
-          

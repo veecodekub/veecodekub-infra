@@ -14,4 +14,11 @@ patches:
     patch: |-
       - op: replace
         path: /spec/rules/0/host
-        value: nestjs-prod.veecodekub.dev
+        value: nextjs-prod.veecodekub.dev
+  - target:
+      kind: ConfigMap
+      name: nextjs-config
+    patch: |-
+      - op: replace
+        path: /data/NEXT_PUBLIC_API_URL
+        value: https://nestjs-prod.veecodekub.dev
