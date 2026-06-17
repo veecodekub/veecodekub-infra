@@ -9,9 +9,9 @@ images:
 
 patches:
   - target:
-      kind: Deployment
+      kind: Ingress
       name: nestjs
     patch: |-
       - op: replace
-        path: /spec/replicas
-        value: 1
+        path: /spec/rules/0/host
+        value: nestjs-test.veecodekub.dev
