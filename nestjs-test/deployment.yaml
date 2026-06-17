@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nestjs
+  template:
+    metadata:
+      labels:
+        app: nestjs
+    spec:
+      containers:
+        - name: nestjs
+          image: ghcr.io/veecodekub/nestjs-cicd:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: nestjs-config

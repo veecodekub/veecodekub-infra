@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextjs-config
+data:
+  APP_NAME: "NextJS Test"
+  NEXT_PUBLIC_API_URL: "https://nestjs-test.veecodekub.dev"

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nestjs
+spec:
+  ingressClassName: traefik
+
+  rules:
+    - host: nestjs-test.veecodekub.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nestjs
+                port:
+                  number: 80
