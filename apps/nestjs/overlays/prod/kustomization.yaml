@@ -1,0 +1,17 @@
+resources:
+  - ../../base
+
+namespace: nestjs-prod
+
+images:
+  - name: ghcr.io/veecodekub/nestjs-cicd
+    newTag: latest
+
+patches:
+  - target:
+      kind: Deployment
+      name: nestjs
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2

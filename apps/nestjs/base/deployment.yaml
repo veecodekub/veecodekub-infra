@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nestjs
-  namespace: nestjs-test
 spec:
   replicas: 1
   selector:
@@ -15,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nestjs
-          image: ghcr.io/veecodekub/nestjs-cicd:latest
+          image: ghcr.io/veecodekub/nestjs-cicd
           ports:
             - containerPort: 3000
           envFrom:
