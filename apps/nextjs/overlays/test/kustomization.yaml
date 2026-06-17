@@ -1,0 +1,17 @@
+resources:
+  - ../../base
+
+namespace: nextjs-test
+
+images:
+  - name: ghcr.io/veecodekub/nextjs-cicd
+    newTag: test
+
+patches:
+  - target:
+      kind: Ingress
+      name: nextjs
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: nextjs-test.veecodekub.dev

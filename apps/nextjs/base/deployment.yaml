@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextjs
-  namespace: nextjs-test
 spec:
   replicas: 1
   selector:
@@ -15,9 +14,12 @@ spec:
     spec:
       containers:
         - name: nextjs
-          image: ghcr.io/veecodekub/nextjs-cicd:latest
+          image: ghcr.io/veecodekub/nextjs-cicd
           ports:
             - containerPort: 3000
           envFrom:
             - configMapRef:
                 name: nextjs-config
+            - secretRef:
+                name: nextjs-secret
+          

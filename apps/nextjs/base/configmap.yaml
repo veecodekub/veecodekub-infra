@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextjs-config
+data:
+  NODE_ENV: production
+  PORT: "3000"

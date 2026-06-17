@@ -1,0 +1,17 @@
+resources:
+  - ../../base
+
+namespace: nextjs-prod
+
+images:
+  - name: ghcr.io/veecodekub/nextjs-cicd
+    newTag: latest
+
+patches:
+  - target:
+      kind: Ingress
+      name: nextjs
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: nestjs-prod.veecodekub.dev
