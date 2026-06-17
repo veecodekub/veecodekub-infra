@@ -1,0 +1,8 @@
+resources:
+  - ../base
+
+namespace: nestjs-test
+
+images:
+  - name: ghcr.io/veecodekub/nextjs
+    newTag: test

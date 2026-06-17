@@ -1,0 +1,8 @@
+resources:
+  - ../base
+
+namespace: nestjs-prod
+
+images:
+  - name: ghcr.io/veecodekub/nextjs
+    newTag: latest
