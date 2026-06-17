@@ -10,6 +10,16 @@ images:
 
 patches:
   - target:
+      kind: ExternalSecret
+      name: nestjs-secret
+    patch: |-
+      - op: replace
+        path: /spec/data/0/remoteRef/key
+        value: nestjs/prod
+      - op: replace
+        path: /spec/data/1/remoteRef/key
+        value: nestjs/prod
+  - target:
       kind: Ingress
       name: nestjs
     patch: |-
