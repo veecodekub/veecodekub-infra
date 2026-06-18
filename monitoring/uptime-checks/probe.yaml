@@ -14,6 +14,6 @@ spec:
   targets:
     staticConfig:
       static:
-        - https://nextjs-prod.veecodekub.dev/
+        - https://nextjs-prod.veecodekub.dev/nextjs-cicd
         - https://nestjs-prod.veecodekub.dev/api/v1/health/live
         - https://nestjs-prod.veecodekub.dev/api/v1/health/ready
