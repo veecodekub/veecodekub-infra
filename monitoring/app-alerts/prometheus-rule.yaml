@@ -1,0 +1,105 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nextjs-nestjs-app-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: nextjs-nestjs.availability
+      rules:
+        - alert: NextJSProdReplicasUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="nextjs-prod", deployment="nextjs"} < 2
+          for: 5m
+          labels:
+            severity: critical
+            service: nextjs
+            environment: prod
+          annotations:
+            summary: "NextJS prod has fewer than 2 available replicas"
+            description: "Deployment nextjs in namespace nextjs-prod has had fewer than 2 available replicas for more than 5 minutes."
+
+        - alert: NestJSProdReplicasUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="nestjs-prod", deployment="nestjs"} < 2
+          for: 5m
+          labels:
+            severity: critical
+            service: nestjs
+            environment: prod
+          annotations:
+            summary: "NestJS prod has fewer than 2 available replicas"
+            description: "Deployment nestjs in namespace nestjs-prod has had fewer than 2 available replicas for more than 5 minutes."
+
+        - alert: ProdPodCrashLooping
+          expr: kube_pod_container_status_waiting_reason{namespace=~"nextjs-prod|nestjs-prod", reason="CrashLoopBackOff"} == 1
+          for: 5m
+          labels:
+            severity: critical
+            environment: prod
+          annotations:
+            summary: "Production pod is in CrashLoopBackOff"
+            description: "Pod {{ $labels.pod }} container {{ $labels.container }} in namespace {{ $labels.namespace }} has been in CrashLoopBackOff for more than 5 minutes."
+
+        - alert: ProdContainerRestartingFrequently
+          expr: increase(kube_pod_container_status_restarts_total{namespace=~"nextjs-prod|nestjs-prod"}[10m]) > 2
+          for: 2m
+          labels:
+            severity: warning
+            environment: prod
+          annotations:
+            summary: "Production container is restarting frequently"
+            description: "Pod {{ $labels.pod }} container {{ $labels.container }} in namespace {{ $labels.namespace }} restarted more than 2 times in the last 10 minutes."
+
+        - alert: NestJSMigrationInitContainerFailed
+          expr: kube_pod_init_container_status_terminated_reason{namespace="nestjs-prod", container="migrate", reason=~"Error|OOMKilled|ContainerCannotRun"} == 1
+          for: 2m
+          labels:
+            severity: critical
+            service: nestjs
+            environment: prod
+          annotations:
+            summary: "NestJS migration init container failed"
+            description: "NestJS migration init container failed in pod {{ $labels.pod }} with reason {{ $labels.reason }}."
+
+    - name: nextjs-nestjs.capacity
+      rules:
+        - alert: ProdHPAAtMaxReplicas
+          expr: kube_horizontalpodautoscaler_status_current_replicas{namespace=~"nextjs-prod|nestjs-prod"} >= kube_horizontalpodautoscaler_spec_max_replicas{namespace=~"nextjs-prod|nestjs-prod"}
+          for: 10m
+          labels:
+            severity: warning
+            environment: prod
+          annotations:
+            summary: "Production HPA is at max replicas"
+            description: "HPA {{ $labels.horizontalpodautoscaler }} in namespace {{ $labels.namespace }} has been at max replicas for more than 10 minutes."
+
+        - alert: ProdContainerHighCPU
+          expr: |
+            sum by (namespace, pod, container) (
+              rate(container_cpu_usage_seconds_total{namespace=~"nextjs-prod|nestjs-prod", container!="", image!=""}[5m])
+            )
+            /
+            sum by (namespace, pod, container) (
+              kube_pod_container_resource_limits{namespace=~"nextjs-prod|nestjs-prod", resource="cpu"}
+            ) > 0.85
+          for: 10m
+          labels:
+            severity: warning
+            environment: prod
+          annotations:
+            summary: "Production container CPU usage is high"
+            description: "Pod {{ $labels.pod }} container {{ $labels.container }} in namespace {{ $labels.namespace }} has used more than 85% of its CPU limit for more than 10 minutes."
+
+        - alert: ProdContainerHighMemory
+          expr: |
+            container_memory_working_set_bytes{namespace=~"nextjs-prod|nestjs-prod", container!="", image!=""}
+            /
+            kube_pod_container_resource_limits{namespace=~"nextjs-prod|nestjs-prod", resource="memory"} > 0.85
+          for: 10m
+          labels:
+            severity: warning
+            environment: prod
+          annotations:
+            summary: "Production container memory usage is high"
+            description: "Pod {{ $labels.pod }} container {{ $labels.container }} in namespace {{ $labels.namespace }} has used more than 85% of its memory limit for more than 10 minutes."
