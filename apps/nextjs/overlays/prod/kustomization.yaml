@@ -1,11 +1,12 @@
 resources:
   - ../../base
+  - namespace.yaml
 
 namespace: nextjs-prod
 
 images:
   - name: ghcr.io/veecodekub/nextjs-cicd
-    newTag: latest
+    newTag: 0.0.1
 
 patches:
   - target:
@@ -15,10 +16,20 @@ patches:
       - op: replace
         path: /spec/rules/0/host
         value: nextjs-prod.veecodekub.dev
+      - op: add
+        path: /metadata/annotations
+        value:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+      - op: add
+        path: /spec/tls
+        value:
+          - hosts:
+              - nextjs-prod.veecodekub.dev
+            secretName: nextjs-prod-tls
   - target:
       kind: ConfigMap
       name: nextjs-config
     patch: |-
       - op: replace
-        path: /data/NEXT_PUBLIC_API_URL
+        path: /data/API_URL
         value: https://nestjs-prod.veecodekub.dev

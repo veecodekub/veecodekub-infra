@@ -12,9 +12,28 @@ spec:
       labels:
         app: nestjs
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: migrate
+          image: ghcr.io/veecodekub/nestjs-cicd
+          command: ["npx", "prisma", "migrate", "deploy"]
+          envFrom:
+            - configMapRef:
+                name: nestjs-config
+            - secretRef:
+                name: nestjs-secret
       containers:
         - name: nestjs
           image: ghcr.io/veecodekub/nestjs-cicd
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 3000
           livenessProbe:

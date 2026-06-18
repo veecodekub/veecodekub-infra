@@ -1,5 +1,6 @@
 resources:
   - ../../base
+  - namespace.yaml
 
 namespace: nextjs-test
 
@@ -15,10 +16,20 @@ patches:
       - op: replace
         path: /spec/rules/0/host
         value: nextjs-test.veecodekub.dev
+      - op: add
+        path: /metadata/annotations
+        value:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+      - op: add
+        path: /spec/tls
+        value:
+          - hosts:
+              - nextjs-test.veecodekub.dev
+            secretName: nextjs-test-tls
   - target:
       kind: ConfigMap
       name: nextjs-config
     patch: |-
       - op: replace
-        path: /data/NEXT_PUBLIC_API_URL
+        path: /data/API_URL
         value: https://nestjs-test.veecodekub.dev
