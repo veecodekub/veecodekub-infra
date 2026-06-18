@@ -1,6 +1,9 @@
 resources:
   - ../../base
   - namespace.yaml
+  - pdb.yaml
+  - hpa.yaml
+  - network-policy.yaml
 
 namespace: nestjs-prod
 
@@ -36,3 +39,10 @@ patches:
           - hosts:
               - nestjs-prod.veecodekub.dev
             secretName: nestjs-prod-tls
+  - target:
+      kind: Deployment
+      name: nestjs
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2

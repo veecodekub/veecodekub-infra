@@ -1,6 +1,9 @@
 resources:
   - ../../base
   - namespace.yaml
+  - pdb.yaml
+  - hpa.yaml
+  - network-policy.yaml
 
 namespace: nextjs-prod
 
@@ -32,4 +35,11 @@ patches:
     patch: |-
       - op: replace
         path: /data/API_URL
-        value: https://nestjs-prod.veecodekub.dev
+        value: http://nestjs.nestjs-prod.svc.cluster.local
+  - target:
+      kind: Deployment
+      name: nextjs
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2

@@ -4,6 +4,11 @@ metadata:
   name: nextjs
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: nextjs
@@ -17,11 +22,14 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: nextjs
           image: ghcr.io/veecodekub/nextjs-cicd
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -50,3 +58,17 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextjs-config
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: node-cache
+              mountPath: /home/node/.cache
+            - name: next-cache
+              mountPath: /app/.next/cache
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: node-cache
+          emptyDir: {}
+        - name: next-cache
+          emptyDir: {}

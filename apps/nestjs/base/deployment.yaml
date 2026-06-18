@@ -4,6 +4,11 @@ metadata:
   name: nestjs
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: nestjs
@@ -17,20 +22,36 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       initContainers:
         - name: migrate
           image: ghcr.io/veecodekub/nestjs-cicd
           command: ["npx", "prisma", "migrate", "deploy"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - configMapRef:
                 name: nestjs-config
             - secretRef:
                 name: nestjs-secret
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: node-cache
+              mountPath: /home/node/.cache
+            - name: npm-cache
+              mountPath: /home/node/.npm
       containers:
         - name: nestjs
           image: ghcr.io/veecodekub/nestjs-cicd
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -42,6 +63,12 @@ spec:
               port: 3000
             initialDelaySeconds: 30
             periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /api/v1/health/live
+              port: 3000
+            failureThreshold: 30
+            periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /api/v1/health/ready
@@ -61,3 +88,17 @@ spec:
                 name: nestjs-config
             - secretRef:
                 name: nestjs-secret
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: node-cache
+              mountPath: /home/node/.cache
+            - name: npm-cache
+              mountPath: /home/node/.npm
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: node-cache
+          emptyDir: {}
+        - name: npm-cache
+          emptyDir: {}
