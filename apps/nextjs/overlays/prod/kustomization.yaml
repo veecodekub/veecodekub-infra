@@ -9,7 +9,8 @@ namespace: nextjs-prod
 
 images:
   - name: ghcr.io/veecodekub/nextjs-cicd
-    newTag: 0.0.1
+    newTag: main-d9a9e13
+    digest: sha256:50e119732a5193aeb7edd843ab368d4d87a0d347a0216ee6c2d638ebfc9c6418
 
 patches:
   - target:
