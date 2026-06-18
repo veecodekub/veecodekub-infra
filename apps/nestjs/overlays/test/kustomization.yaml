@@ -6,7 +6,7 @@ namespace: nestjs-test
 
 images:
   - name: ghcr.io/veecodekub/nestjs-cicd
-    newTag: 0.0.2
+    newTag: test-04fc3f5
 
 patches:
   - target:
