@@ -6,7 +6,7 @@ namespace: nextjs-test
 
 images:
   - name: ghcr.io/veecodekub/nextjs-cicd
-    newTag: test
+    newTag: test-dd93906
 
 patches:
   - target:
