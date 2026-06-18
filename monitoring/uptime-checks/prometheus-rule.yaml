@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: production-uptime-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: production.uptime
+      rules:
+        - alert: ProductionEndpointDown
+          expr: probe_success{job="production-uptime"} == 0
+          for: 2m
+          labels:
+            severity: critical
+            environment: prod
+          annotations:
+            summary: "Production endpoint is down"
+            description: "{{ $labels.instance }} has failed uptime checks for more than 2 minutes."
+
+        - alert: ProductionEndpointSlow
+          expr: probe_duration_seconds{job="production-uptime"} > 2
+          for: 5m
+          labels:
+            severity: warning
+            environment: prod
+          annotations:
+            summary: "Production endpoint is slow"
+            description: "{{ $labels.instance }} has taken more than 2 seconds to respond for more than 5 minutes."

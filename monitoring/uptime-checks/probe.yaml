@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: production-uptime
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: production-uptime
+  interval: 30s
+  module: http_2xx
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - https://nextjs-prod.veecodekub.dev/
+        - https://nestjs-prod.veecodekub.dev/api/v1/health/live
+        - https://nestjs-prod.veecodekub.dev/api/v1/health/ready
