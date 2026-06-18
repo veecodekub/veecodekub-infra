@@ -32,3 +32,6 @@ jobs:
 
       - name: Render NestJS prod manifests
         run: kubectl kustomize apps/nestjs/overlays/prod
+
+      - name: Render app alert manifests
+        run: kubectl kustomize monitoring/app-alerts
