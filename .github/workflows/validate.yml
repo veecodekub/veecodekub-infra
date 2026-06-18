@@ -1,0 +1,34 @@
+name: Validate Kubernetes manifests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Render NextJS test manifests
+        run: kubectl kustomize apps/nextjs/overlays/test
+
+      - name: Render NextJS prod manifests
+        run: kubectl kustomize apps/nextjs/overlays/prod
+
+      - name: Render NestJS test manifests
+        run: kubectl kustomize apps/nestjs/overlays/test
+
+      - name: Render NestJS prod manifests
+        run: kubectl kustomize apps/nestjs/overlays/prod

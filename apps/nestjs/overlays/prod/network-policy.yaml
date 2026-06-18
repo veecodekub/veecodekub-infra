@@ -10,7 +10,20 @@ spec:
     - Ingress
     - Egress
   ingress:
-    - ports:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: nextjs-prod
+          podSelector:
+            matchLabels:
+              app: nextjs
+      ports:
         - protocol: TCP
           port: 3000
   egress:
