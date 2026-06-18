@@ -1,0 +1,3 @@
+resources:
+  - probe.yaml
+  - prometheus-rule.yaml

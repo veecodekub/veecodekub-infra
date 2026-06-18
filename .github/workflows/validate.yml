@@ -35,3 +35,6 @@ jobs:
 
       - name: Render app alert manifests
         run: kubectl kustomize monitoring/app-alerts
+
+      - name: Render uptime check manifests
+        run: kubectl kustomize monitoring/uptime-checks
