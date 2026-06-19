@@ -93,9 +93,13 @@ spec:
 
         - alert: ProdContainerHighMemory
           expr: |
-            container_memory_working_set_bytes{namespace=~"nextjs-prod|nestjs-prod", container!="", image!=""}
+            sum by (namespace, pod, container) (
+              container_memory_working_set_bytes{namespace=~"nextjs-prod|nestjs-prod", container!="", image!=""}
+            )
             /
-            kube_pod_container_resource_limits{namespace=~"nextjs-prod|nestjs-prod", resource="memory"} > 0.85
+            sum by (namespace, pod, container) (
+              kube_pod_container_resource_limits{namespace=~"nextjs-prod|nestjs-prod", resource="memory"}
+            ) > 0.85
           for: 10m
           labels:
             severity: warning

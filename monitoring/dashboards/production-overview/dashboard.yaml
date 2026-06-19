@@ -328,7 +328,7 @@ data:
           },
           "targets": [
             {
-              "expr": "100 * container_memory_working_set_bytes{namespace=~\"nextjs-prod|nestjs-prod\", container!=\"\", image!=\"\"} / kube_pod_container_resource_limits{namespace=~\"nextjs-prod|nestjs-prod\", resource=\"memory\"}",
+              "expr": "100 * sum by (namespace, pod, container) (container_memory_working_set_bytes{namespace=~\"nextjs-prod|nestjs-prod\", container!=\"\", image!=\"\"}) / sum by (namespace, pod, container) (kube_pod_container_resource_limits{namespace=~\"nextjs-prod|nestjs-prod\", resource=\"memory\"})",
               "legendFormat": "{{ namespace }}/{{ pod }}/{{ container }}",
               "refId": "A"
             }
