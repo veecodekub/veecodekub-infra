@@ -38,3 +38,6 @@ jobs:
 
       - name: Render uptime check manifests
         run: kubectl kustomize monitoring/uptime-checks
+
+      - name: Render production dashboard manifests
+        run: kubectl kustomize monitoring/dashboards/production-overview
