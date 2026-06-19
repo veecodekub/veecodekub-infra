@@ -9,8 +9,8 @@ namespace: nestjs-prod
 
 images:
   - name: ghcr.io/veecodekub/nestjs-cicd
-    newTag: main-1c61f31
-    digest: sha256:6a02b28547a1a91f6dc60c07e7567fdc11caab13c2f4ffcef567075d2c489d7e
+    newTag: main-fdf08e1
+    digest: sha256:154471ef33cbcf7e9104f536f308dcdd98f847a3274414a0017e666f06e9c254
 
 patches:
   - target:
